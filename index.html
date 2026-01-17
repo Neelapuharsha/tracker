@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Health Hub • Habits</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-elevated: #0b1020;
+      --bg-card: #111827;
+      --accent-habit: #22c55e;
+      --accent-workout: #38bdf8;
+      --accent-sleep: #a855f7;
+      --accent-steps: #facc15;
+      --accent-pool: #f97316;
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border-subtle: #1f2937;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --shadow-soft: 0 18px 60px rgba(0,0,0,0.6);
+      --sidebar-width: 260px;
+      --max-content-width: 1320px;
+    }
+    /* Scrollbar styling */
+* {
+  scrollbar-width: thin;               /* Firefox */
+  scrollbar-color: #4b5563 #020617;    /* thumb, track */
+}
+
+/* WebKit-based browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg,#4b5563,#111827);
+  border-radius: 999px;
+  border: 1px solid #020617;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg,#6b7280,#1f2937);
+}
+
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Inter",sans-serif;
+      background: radial-gradient(circle at top,#111827 0,#020617 45%,#020617 100%);
+      color: var(--text-main);
+    }
+
+    body { display:flex; justify-content:center; }
+
+    .app-shell {
+      display:flex;
+      min-height:100vh;
+      width:100%;
+      max-width:1600px;
+      background:linear-gradient(135deg,rgba(15,23,42,0.98),rgba(2,6,23,0.98));
+      box-shadow:0 0 0 1px rgba(15,23,42,0.8),var(--shadow-soft);
+      overflow:hidden;
+      position:relative;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width:var(--sidebar-width);
+      background:radial-gradient(circle at top left,#111827 0,#020617 60%);
+      border-right:1px solid var(--border-subtle);
+      padding:16px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .sidebar-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-bottom:8px;
+    }
+
+    .app-title {
+      font-weight:600;
+      font-size:18px;
+      letter-spacing:0.03em;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .app-title-dot {
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background:radial-gradient(circle at 30% 30%,#4ade80,#22c55e);
+      box-shadow:0 0 18px rgba(34,197,94,0.9);
+    }
+
+    .sidebar-badge {
+      font-size:11px;
+      padding:3px 8px;
+      border-radius:999px;
+      background:rgba(148,163,184,0.15);
+      border:1px solid rgba(148,163,184,0.3);
+      color:var(--text-soft);
+      white-space:nowrap;
+    }
+
+    .profile-switcher {
+      background:rgba(15,23,42,0.94);
+      border-radius:var(--radius-md);
+      border:1px solid var(--border-subtle);
+      padding:8px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .profile-row {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:6px;
+    }
+
+    .profile-pill {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 8px;
+      border-radius:999px;
+      cursor:pointer;
+      border:1px solid transparent;
+      transition:background 0.15s,border-color 0.15s;
+      font-size:12px;
+    }
+
+    .profile-pill.active { background:rgba(34,197,94,0.08); border-color:rgba(34,197,94,0.7); }
+    .profile-pill.readonly { opacity:0.6; }
+
+    .avatar {
+      width:22px;
+      height:22px;
+      border-radius:999px;
+      background:conic-gradient(from 180deg,#4ade80,#22d3ee,#a855f7,#f97316,#4ade80);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+      color:#020617;
+      font-weight:600;
+    }
+
+    .profile-meta { display:flex; flex-direction:column; gap:2px; }
+    .profile-name { font-size:12px; font-weight:500; }
+    .profile-tag { font-size:10px; color:var(--text-soft); }
+
+    .sidebar-nav {
+      margin-top:4px;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
+    .nav-section-label {
+      margin:6px 2px 2px;
+      font-size:10px;
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+      color:#6b7280;
+    }
+
+    .nav-item {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:13px;
+      color:var(--text-soft);
+      border:1px solid transparent;
+      transition:background 0.15s,color 0.15s,border-color 0.15s;
+    }
+
+    .nav-item span.icon { width:18px; text-align:center; font-size:14px; }
+    .nav-item.active { background:rgba(34,197,94,0.12); color:#e5f7eb; border-color:rgba(34,197,94,0.7); }
+    .nav-item:hover { background:rgba(15,23,42,0.9); }
+
+    .sidebar-footer {
+      margin-top:auto;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      font-size:11px;
+      color:var(--text-soft);
+    }
+    .sidebar-footer strong { color:#e5e7eb; }
+
+    /* Main */
+    .main {
+      flex:1;
+      padding:16px 18px;
+      overflow-y:auto;
+      display:flex;
+      justify-content:center;
+    }
+
+    .main-inner {
+      width:100%;
+      max-width:var(--max-content-width);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .main-header {
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+
+    .main-title {
+      font-size:18px;
+      font-weight:600;
+      display:flex;
+      align-items:baseline;
+      gap:8px;
+    }
+
+    .main-subtitle { font-size:12px; color:var(--text-soft); }
+
+    .main-actions { display:flex; flex-wrap:wrap; gap:6px; }
+
+    .btn {
+      border-radius:999px;
+      border:1px solid var(--border-subtle);
+      background:rgba(15,23,42,0.9);
+      color:var(--text-main);
+      font-size:12px;
+      padding:6px 12px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      transition:background 0.15s,border-color 0.15s,transform 0.05s;
+    }
+    .btn:hover { background:rgba(31,41,55,0.95); }
+    .btn:active { transform:translateY(1px); }
+    .btn-primary {
+      border-color:rgba(34,197,94,0.9);
+      background:radial-gradient(circle at 30% 0,rgba(74,222,128,0.3),rgba(22,163,74,0.95));
+      color:#ecfdf5;
+    }
+    .btn-ghost { background:transparent; }
+
+    .filter-group {
+      display:inline-flex;
+      padding:2px;
+      border-radius:999px;
+      border:1px solid var(--border-subtle);
+      background:rgba(15,23,42,0.9);
+    }
+    .filter-pill {
+      border-radius:999px;
+      padding:4px 8px;
+      font-size:11px;
+      cursor:pointer;
+      color:var(--text-soft);
+    }
+    .filter-pill.active { background:rgba(34,197,94,0.16); color:#bbf7d0; }
+
+    .card-grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+    @media(max-width:900px){ .card-grid{grid-template-columns:1fr;} }
+
+    .card {
+      background:rgba(15,23,42,0.96);
+      border-radius:var(--radius-lg);
+      border:1px solid rgba(31,41,55,0.9);
+      padding:10px;
+      box-shadow:var(--shadow-soft);
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      font-size:12px;
+    }
+
+    .card-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:6px;
+    }
+
+    .card-title {
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-size:13px;
+      font-weight:500;
+    }
+
+    .dot { width:8px; height:8px; border-radius:999px; }
+    .dot-habit { background:var(--accent-habit); }
+    .dot-pool { background:var(--accent-pool); }
+
+    .card-subtitle { font-size:10px; color:var(--text-soft); }
+
+    .card-body { display:flex; flex-direction:column; gap:4px; }
+
+    .field-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+
+    .field {
+      flex:1 1 120px;
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
+    }
+
+    .field label { font-size:10px; color:var(--text-soft); }
+
+    .field input,
+    .field select {
+      background:rgba(15,23,42,0.95);
+      border-radius:10px;
+      border:1px solid rgba(31,41,55,0.9);
+      color:var(--text-main);
+      font-size:12px;
+      padding:5px 8px;
+      outline:none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color:rgba(56,189,248,0.8);
+      box-shadow:0 0 0 1px rgba(56,189,248,0.4);
+    }
+
+    .field input[readonly],
+    .field select[disabled] {
+      opacity:0.7;
+      cursor:not-allowed;
+    }
+
+    .logs-card {
+      margin-top:10px;
+      padding:10px;
+      background:rgba(15,23,42,0.96);
+      border-radius:var(--radius-lg);
+      border:1px solid rgba(31,41,55,0.9);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .logs-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-bottom:6px;
+    }
+
+    .logs-title {
+      font-size:13px;
+      font-weight:500;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .table {
+      width:100%;
+      border-collapse:collapse;
+      font-size:11px;
+    }
+    .table th,
+    .table td {
+      padding:4px 6px;
+      border-bottom:1px dashed rgba(31,41,55,0.9);
+      text-align:left;
+      white-space:nowrap;
+    }
+    .table th {
+      color:#9ca3af;
+      font-weight:500;
+      font-size:10px;
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+    }
+    .table tr:last-child td { border-bottom:none; }
+
+    .log-dot {
+      width:7px;
+      height:7px;
+      border-radius:999px;
+      display:inline-block;
+      margin-right:4px;
+    }
+
+    .badge {
+      padding:2px 6px;
+      border-radius:999px;
+      font-size:10px;
+      border:1px solid rgba(55,65,81,0.9);
+      color:var(--text-soft);
+    }
+
+    .badge-compare { cursor:pointer; }
+
+    .habit-dot {
+      width:8px;
+      height:8px;
+      border-radius:999px;
+      display:inline-block;
+      margin-right:4px;
+    }
+
+    .color-choice {
+      display:inline-flex;
+      gap:4px;
+      align-items:center;
+    }
+
+    .color-swatch {
+      width:14px;
+      height:14px;
+      border-radius:999px;
+      border:1px solid rgba(31,41,55,0.9);
+      cursor:pointer;
+    }
+    .color-swatch.selected { outline:1px solid #e5e7eb; }
+
+    @media(max-width:900px){
+      .app-shell{flex-direction:column;}
+      .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border-subtle);}
+    }
+
+
+/* WebKit browsers (Chrome/Edge/Safari): style native arrows */
+.field input,
+.field select {
+  background: rgba(15,23,42,0.95);
+  border-radius: 10px;
+  border: 1px solid rgba(31,41,55,0.9);
+  color: var(--text-main);
+  font-size: 12px;
+  padding: 5px 8px;
+  outline: none;
+}
+.field input:focus,
+.field select:focus {
+  border-color: rgba(56,189,248,0.8);
+  box-shadow: 0 0 0 1px rgba(56,189,248,0.4);
+}
+/* Make the clock icon area lighter so it’s visible on dark theme */
+#dash-sleep-bedtime,
+#dash-sleep-waketime {
+  background:
+    linear-gradient(
+      to right,
+      rgba(15,23,42,0.95) 0,
+      rgba(15,23,42,0.95) calc(100% - 30px),
+      rgba(34,197,94,0.4) calc(100% - 30px),
+      rgba(34,197,94,0.4) 100%
+    );
+  color: var(--text-main);
+}
+
+#dash-pool-total {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #facc15;              /* or var(--accent-pool) if you prefer */
+}
+/* If you already style inputs like this, just add textarea to the selector */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+  background-color: var(--input-bg);   /* match your input bg */
+  color: var(--input-fg);              /* match your input text color */
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: rgba(56,189,248,0.8);
+  box-shadow: 0 0 0 1px rgba(56,189,248,0.4);
+}
+
+/* Modern browsers */
+textarea::placeholder {
+  font-size: 0.8rem;   /* or 12px/13px */
+  font-weight: 400;    /* lighter weight */
+  opacity: 0.8;        /* slightly faded */
+}
+
+/* If you want same style on all fields */
+input::placeholder,
+textarea::placeholder {
+  font-size: 0.8rem;
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+#section-profile .field-row {
+  display: flex;          /* you likely already have this */
+  gap: 12px;              /* horizontal gap between fields */
+  margin-bottom: 12px;    /* vertical space between rows */
+}
+
+/* Inner editable text in date input (Chrome/Edge/Safari) */
+input[type="date"]::-webkit-datetime-edit {
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+
+
+
+/*end of css*/
+
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="app-title">
+        <div class="app-title-dot"></div>
+        <span>Health Hub</span>
+      </div>
+      <div class="sidebar-badge">Weekly sync • Sunday</div>
+    </div>
+
+    <div class="profile-switcher">
+      <div class="profile-row">
+        <div class="profile-pill active" data-profile="me">
+          <div class="avatar" id="avatar-me">Y</div>
+          <div class="profile-meta">
+            <div class="profile-name" id="name-me">You</div>
+            <div class="profile-tag" id="tag-me">Admin</div>
+          </div>
+        </div>
+      </div>
+      <div class="profile-row">
+        <div class="profile-pill readonly" data-profile="partner">
+          <div class="avatar" id="avatar-partner">P</div>
+          <div class="profile-meta">
+            <div class="profile-name" id="name-partner">Partner</div>
+            <div class="profile-tag" id="tag-partner">Unclaimed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <div class="nav-item active" data-section="dashboard">
+        <span class="icon">🏠</span>
+        <span>Dashboard</span>
+      </div>
+
+      <div class="nav-section-label">Setup</div>
+      <div class="nav-item" data-section="habits">
+        <span class="icon">✅</span>
+        <span>Habits</span>
+      </div>
+      <div class="nav-item" data-section="workout-settings">
+        <span class="icon">🏋️</span>
+        <span>Workout</span>
+      </div>
+      <div class="nav-item" data-section="profile">
+        <span class="icon">🧬</span>
+        <span>Profile</span>
+      </div>
+      <div class="nav-item" data-section="backup">
+        <span class="icon">🗂️</span>
+        <span>Backup & sync</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div>Pool: <strong><span id="sidebar-pool-total">₹0</span></strong> • You: <strong><span id="sidebar-me-fines">₹0</span></strong> • Partner: <strong><span id="sidebar-partner-fines">₹0</span></strong></div>
+      <div style="font-size:10px;">Bad habits auto-add fines. Alcohol defaults to ₹500.</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="main-inner">
+      <!-- Header -->
+      <header class="main-header">
+        <div>
+          <div class="main-title">
+            <span id="header-title">Dashboard</span>
+            <span class="main-subtitle">Add today’s habit entries, then review logs.</span>
+          </div>
+        </div>
+        <div class="main-actions">
+          <div class="filter-group" id="range-filters">
+            <div class="filter-pill active" data-range="today">Today</div>
+            <div class="filter-pill" data-range="week">This week</div>
+            <div class="filter-pill" data-range="month">This month</div>
+            <div class="filter-pill" data-range="all">All</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard -->
+      <section id="section-dashboard">
+        <div class="card-grid">
+          <!-- Habits card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <span>Add Habits</span>
+              </div>
+              <div class="card-subtitle">Select a habit and ADD entry.</div>
+            </div>
+            <div class="card-body">
+              <div class="field-row">
+                <div class="field">
+  <label for="dash-habit-select">Habit</label>
+  <select id="dash-habit-select"></select>
+</div>
+              </div>
+              
+
+
+              <!-- Generic habit -->
+              <div class="field-row" id="habit-generic-row">
+                <div class="field">
+                  <label>Value (optional)</label>
+                  <input type="number" id="dash-habit-value" placeholder="e.g. count or hours" />
+                </div>
+              </div>
+
+              <!-- Sleep -->
+              <div class="field-row" id="habit-sleep-row" style="display:none;">
+                <div class="field">
+                  <label>Bedtime</label>
+                  <input type="time" id="dash-sleep-bedtime" />
+                </div>
+                <div class="field">
+                  <label>Wake time</label>
+                  <input type="time" id="dash-sleep-waketime" />
+                </div>
+                <div class="field">
+                  <label>Total hours</label>
+                  <input type="number" placeholder="e.g. 6, 8 " step="0.1" id="dash-sleep-hours" />
+
+                </div>
+                <div class="field">
+                  <label>Quality (1-5)</label>
+                  <input type="number" placeholder="e.g. 3.5 " min="1" max="5" id="dash-sleep-quality" />
+                </div>
+              </div>
+
+              <!-- Steps -->
+              <div class="field-row" id="habit-steps-row" style="display:none;">
+                <div class="field">
+                  <label>Steps count</label>
+                  <input type="number" id="dash-steps-count" />
+                </div>
+              </div>
+
+              <!-- Workout -->
+              <div class="field-row" id="habit-workout-row" style="display:none;">
+                <div class="field">
+                  <label>Workout template</label>
+                  <select id="dash-workout-select"></select>
+                </div>
+                <div class="field">
+                  <label>Sets</label>
+                  <input type="number" id="dash-workout-sets" />
+                </div>
+                <div class="field">
+                  <label>Reps</label>
+                  <input type="number" id="dash-workout-reps" />
+                </div>
+                <div class="field">
+                  <label>Duration (min)</label>
+                  <input type="number" id="dash-workout-duration" />
+                </div>
+              </div>
+
+              <!-- Screen time -->
+              <div class="field-row" id="habit-screen-row" style="display:none;">
+                <div class="field">
+                  <label>Screen time (hours)</label>
+                  <input type="number" step="0.1" id="dash-screen-hours" />
+                </div>
+              </div>
+
+              <button class="btn btn-primary" id="btn-add-entry">+ ADD</button>
+            </div>
+          </div>
+
+          <!-- Fines & pool -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="dot dot-pool"></span>
+                <span>Fines & pool</span>
+              </div>
+              <div class="card-subtitle">Auto from bad habits.</div>
+            </div>
+            <div class="card-body">
+              <div class="field-row">
+                <div class="field">
+                  <label>Your fines</label>
+                  <div id="dash-me-fines">₹0</div>
+                </div>
+                <div class="field">
+                  <label>Partner fines</label>
+                  <div id="dash-partner-fines">₹0</div>
+                </div>
+                <div class="field">
+                  <label>Pool total</label>
+                  <div id="dash-pool-total">₹0</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logs -->
+        <div class="logs-card">
+          <div class="logs-header">
+            <div class="logs-title">Logs</div>
+            <div class="badge badge-compare" id="btn-compare-range">Compare (Me vs Partner)</div>
+          </div>
+          <table class="table" id="logs-table">
+            <thead>
+            <tr>
+              <th>Label</th>
+              <th>Date</th>
+              <th>Details</th>
+              <th>FINE</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Habits -->
+      <section id="section-habits" style="display:none;">
+        <div class="logs-card">
+          <div class="logs-header">
+            <div class="logs-title">Habits</div>
+          </div>
+          <table class="table" id="habits-settings-table">
+            <thead>
+            <tr>
+              <th>Habit</th>
+              <th>Category</th>
+              <th>Fine (₹)</th>
+              <th>Comparable</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+            <tr>
+              <td>
+                <span id="new-habit-color-dot" class="habit-dot" style="background:#22c55e;"></span>
+                <input type="text" id="new-habit-name" placeholder="New habit name" style="width:120px;background:transparent;border:1px solid var(--border-subtle);border-radius:8px;color:var(--text-main);font-size:11px;padding:3px 6px;">
+              </td>
+              <td>
+                <select id="new-habit-category" style="background:transparent;border:1px solid var(--border-subtle);border-radius:8px;color:var(--text-main);font-size:11px;padding:3px 6px;">
+                  <option value="good">good</option>
+                  <option value="bad">bad</option>
+                </select>
+              </td>
+              <td>
+                <input type="number" id="new-habit-fine" value="0" style="width:70px;background:transparent;border:1px solid var(--border-subtle);border-radius:8px;color:var(--text-main);font-size:11px;padding:3px 6px;">
+              </td>
+              <td>
+                <select id="new-habit-comparable" style="background:transparent;border:1px solid var(--border-subtle);border-radius:8px;color:var(--text-main);font-size:11px;padding:3px 6px;">
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
+              </td>
+              <td>
+                <div class="color-choice" id="new-habit-color-choices"></div>
+                <button class="btn btn-primary" id="btn-add-habit-config">+ ADD</button>
+              </td>
+            </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+
+      <!-- Workout -->
+      <section id="section-workout-settings" style="display:none;">
+        <div class="logs-card">
+          <div class="logs-header">
+            <div class="logs-title">Workout</div>
+          </div>
+          <table class="table" id="workout-settings-table">
+            <thead>
+            <tr>
+              <th>Name</th>
+              <th>Muscle</th>
+              <th>Default sets</th>
+              <th>Default reps</th>
+              <th>Default duration</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+            <tr>
+              <td><input type="text" id="new-workout-name" placeholder="Name" style="width:120px;background:transparent;border:1px solid var(--border-subtle);border-radius:8px;color:var(--text-main);font-size:11px;padding:3px 6px;"></td>
+              <td><input type="text" id="new-workout-muscle" placeholder="Muscle" style="width:110px;background:transparent;border:1px solid var(--border-subtle);border-radius:8px;color:var(--text-main);font-size:11px;padding:3px 6px;"></td>
+              <td><input type="number" id="new-workout-sets" style="width:70px;background:transparent;border:1px solid var(--border-subtle);border-radius:8px;color:var(--text-main);font-size:11px;padding:3px 6px;"></td>
+              <td><input type="number" id="new-workout-reps" style="width:70px;background:transparent;border:1px solid var(--border-subtle);border-radius:8px;color:var(--text-main);font-size:11px;padding:3px 6px;"></td>
+              <td><input type="number" id="new-workout-duration" style="width:80px;background:transparent;border:1px solid var(--border-subtle);border-radius:8px;color:var(--text-main);font-size:11px;padding:3px 6px;"></td>
+              <td><button class="btn btn-primary" id="btn-add-workout-template">+ ADD</button></td>
+            </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+
+      <!-- Profile -->
+<!-- Profile -->
+<section id="section-profile" style="display:none;">
+  <div class="logs-card">
+    <div class="logs-header">
+      <div class="logs-title">
+        <span id="profile-name-display">Profile</span>
+        <!-- will become: Name · 32 -->
+      </div>
+      <div class="badge" id="profile-claim-status">Claim status</div>
+    </div>
+
+    <!-- Row 1: core body info -->
+    <div class="field-row">
+      <div class="field">
+        <label>Name</label>
+        <input type="text" id="profile-name" />
+      </div>
+      <div class="field">
+        <label>Date of birth</label>
+        <input type="date"  id="profile-dob" />
+      </div>
+      <div class="field">
+        <label>Gender</label>
+        <select id="profile-gender">
+          <option value="">Select</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Height (cm)</label>
+        <input type="number" id="profile-height" step="0.1" />
+      </div>
+      <div class="field">
+        <label>Weight (kg)</label>
+        <input type="number" id="profile-weight" step="0.1" />
+      </div>
+      <div class="field">
+        <label>Waist (cm)</label>
+        <input type="number" id="profile-waist" step="0.1" />
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Chest/Bust (cm)</label>
+        <input type="number" id="profile-chest" step="0.1" />
+      </div>
+      <div class="field">
+        <label>Foot size</label>
+        <input type="text" id="profile-foot" placeholder="e.g. UK 9 / 27 cm" />
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Max heart rate (bpm)</label>
+        <input type="number" id="profile-max-hr" />
+      </div>
+      <div class="field">
+        <label>Body fat %</label>
+        <input type="number" id="profile-bodyfat" step="0.1" />
+      </div>
+      <div class="field">
+        <!-- spacer -->
+      </div>
+    </div>
+
+    <!-- Row 2: targets and scores -->
+    <div class="field-row">
+      <div class="field">
+        <label>Target weight (kg)</label>
+        <input type="number" id="profile-target-weight" step="0.1" />
+      </div>
+      <div class="field">
+        <label>BMI (BMI uses height, weight, age & gender.)</label>
+        <div id="profile-bmi" class="badge">-</div>
+      </div>
+      <div class="field">
+        <label>Fitness score</label>
+        <div id="profile-fitness-score" class="badge">-</div>
+      </div>
+    </div>
+
+    <!-- Row 3: medical info -->
+    <div class="field-row">
+      <div class="field">
+        <label>Blood group</label>
+        <input type="text" id="profile-blood-group" placeholder="e.g. O+ / B-" />
+      </div>
+      <div class="field">
+        <label>Medical allergies</label>
+        <textarea id="profile-allergies" rows="1" placeholder="e.g. Penicillin, nuts"></textarea>
+      </div>
+      <div class="field">
+        <label>Chronic conditions</label>
+        <textarea id="profile-chronic" rows="1" placeholder="e.g. Hypertension, diabetes"></textarea>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Treatments / notes</label>
+        <textarea id="profile-treatments" rows="1" placeholder="e.g. Derma, ortho, therapy etc."></textarea>
+      </div>
+      <div class="field"></div>
+      <div class="field"></div>
+    </div>
+
+    <!-- Row 4: sugar tracking -->
+    <div class="field-row">
+      <div class="field">
+        <label>Sugar (fasting, mg/dL)</label>
+        <input type="number" id="profile-sugar-fasting" />
+      </div>
+      <div class="field">
+        <label>Sugar (post‑meal, mg/dL)</label>
+        <input type="number" id="profile-sugar-post" />
+      </div>
+      <div class="field">
+        <label>Sugar last updated</label>
+        <div id="profile-sugar-updated" class="badge">Not recorded yet</div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-save-profile">Save</button>
+  </div>
+</section>
+
+
+
+      <!-- Backup -->
+      <section id="section-backup" style="display:none;">
+        <div class="logs-card">
+          <div class="logs-header">
+            <div class="logs-title">Backup & sync</div>
+          </div>
+          <p style="font-size:12px;color:var(--text-soft);">
+            Export/import the full app state (settings, profiles, logs, pool). Import overwrites everything on this device.
+          </p>
+          <div class="field-row">
+            <button class="btn btn-primary" id="btn-export-app">Export JSON</button>
+            <label class="btn">
+              Import JSON
+              <input type="file" id="input-import-app" accept="application/json" style="display:none;">
+            </label>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script>
+  const STORAGE_KEY = 'healthHub_app_v6';
+
+  const HABIT_COLORS = [
+    '#22c55e','#38bdf8','#a855f7','#facc15','#f97316','#f97373',
+    '#2dd4bf','#eab308','#6ee7b7','#60a5fa','#fbbf24','#fb7185',
+    '#c4b5fd','#4ade80'
+  ];
+
+  const SYSTEM_IDS = ['sleep','workout','steps','alcohol','screen_time','no_sugar','no_junk'];
+
+  const systemHabits = [
+    { id:'sleep',       name:'Sleep',       category:'good', fine:0,  comparable:true, color:'#a855f7' },
+    { id:'workout',     name:'Workout',     category:'good', fine:0,  comparable:true, color:'#38bdf8' },
+    { id:'steps',       name:'Steps',       category:'good', fine:0,  comparable:true, color:'#facc15' },
+    { id:'alcohol',     name:'Alcohol',     category:'bad',  fine:500,comparable:true, color:'#f97316' },
+    { id:'screen_time', name:'Screen time', category:'bad',  fine:50, comparable:true, color:'#fb7185' },
+    { id:'no_sugar',    name:'Sugar Intake',    category:'bad',  fine:50, comparable:true, color:'#f97373' },
+    { id:'no_junk',     name:'Junk Intake',     category:'bad',  fine:50, comparable:true, color:'#eab308' }
+  ];
+
+  const defaultHabits = [
+    ...systemHabits,
+    { id:'water',      name:'Water 3L',   category:'good', fine:0, comparable:true, color:'#22c55e' },
+    { id:'meditation', name:'Meditation', category:'good', fine:0, comparable:true, color:'#6ee7b7' },
+    { id:'journaling', name:'Journaling', category:'good', fine:0, comparable:true, color:'#60a5fa' },
+    { id:'reading',    name:'Reading',    category:'good', fine:0, comparable:true, color:'#c4b5fd' }
+  ];
+
+  const defaultWorkoutTemplates = [
+    { id:'push', name:'Push workout', muscle:'Chest/Triceps', sets:3, reps:10, duration:40 },
+    { id:'pull', name:'Pull workout', muscle:'Back/Biceps',  sets:3, reps:10, duration:40 },
+    { id:'legs', name:'Leg day',      muscle:'Legs',         sets:4, reps:12, duration:50 }
+  ];
+
+  const defaultState = {
+    habitsConfig: defaultHabits,
+    workoutTemplates: defaultWorkoutTemplates,
+    profiles: {
+      me: {
+        id:'me',
+        role:'admin',
+        name:'You',
+        claimed:true,
+        avatarInitial:'Y',
+        profile:{
+          heightCm:null,
+          weightKg:null,
+          bodyFat:null,
+          targetWeight:null,
+          blood:'',
+          allergies:'',
+          likes:'',
+          dislikes:'',
+          sugar:null,
+          sugarUpdated:null
+        },
+        stats:{ totalFines:0 }
+      },
+      partner: {
+        id:'partner',
+        role:'partner',
+        name:'Partner',
+        claimed:false,
+        avatarInitial:'P',
+        profile:{
+          heightCm:null,
+          weightKg:null,
+          bodyFat:null,
+          targetWeight:null,
+          blood:'',
+          allergies:'',
+          likes:'',
+          dislikes:'',
+          sugar:null,
+          sugarUpdated:null
+        },
+        stats:{ totalFines:0 }
+      }
+    },
+    logs:{
+      habits:[],   // {id, profileId, date, habitId, value, violated, fine}
+      workouts:[], // {id, profileId, date, templateId, name, muscle, sets, reps, duration}
+      sleep:[],    // {id, profileId, date, bedtime, waketime, hours, quality}
+      steps:[],    // {id, profileId, date, steps}
+      pool:[]      // {id, profileId, date, habitLogId, habitId, reason, amount}
+    }
+  };
+
+  function structuredClone(obj){ return JSON.parse(JSON.stringify(obj)); }
+
+  function deepMerge(base, patch){
+    if(typeof base !== 'object' || base === null) return patch;
+    if(typeof patch !== 'object' || patch === null) return patch;
+    const out = Array.isArray(base) ? [...base] : {...base};
+    Object.keys(patch).forEach(key=>{
+      if(key in base){
+        out[key] = deepMerge(base[key], patch[key]);
+      }else{
+        out[key] = patch[key];
+      }
+    });
+    return out;
+  }
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return structuredClone(defaultState);
+      const parsed = JSON.parse(raw);
+      return deepMerge(structuredClone(defaultState), parsed);
+    }catch(e){
+      console.error(e);
+      return structuredClone(defaultState);
+    }
+  }
+
+  let appState = loadState();
+  systemHabits.forEach(sys => {
+  const existing = appState.habitsConfig.find(h => h.id === sys.id);
+  if(existing){
+    existing.name = sys.name;
+  }
+});
+saveState();
+  let activeProfileId = 'me';
+  let activeRange = 'today';
+
+  const $ = sel => document.querySelector(sel);
+  const $all = sel => Array.from(document.querySelectorAll(sel));
+
+  function todayISO(){ return new Date().toISOString().slice(0,10); }
+  function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(appState)); }
+  function formatMoney(v){ return '₹'+(v||0); }
+  function uid(prefix){
+    return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,7);
+  }
+
+  function updateSidebar(){
+    const me = appState.profiles.me;
+    const partner = appState.profiles.partner;
+    $('#name-me').textContent = me.name;
+    $('#avatar-me').textContent = me.avatarInitial || (me.name||'Y')[0];
+    $('#tag-me').textContent = me.role === 'admin' ? 'Admin' : 'User';
+
+    $('#name-partner').textContent = partner.name;
+    $('#avatar-partner').textContent = partner.avatarInitial || (partner.name||'P')[0];
+    $('#tag-partner').textContent = partner.claimed ? 'Claimed' : 'Unclaimed';
+
+    $all('.profile-pill').forEach(p=>{
+      const pid = p.getAttribute('data-profile');
+      if(pid===activeProfileId) p.classList.add('active');
+      else p.classList.remove('active');
+    });
+
+    const meFines = appState.logs.pool
+      .filter(p=>p.profileId==='me')
+      .reduce((s,p)=>s+p.amount,0);
+    const partnerFines = appState.logs.pool
+      .filter(p=>p.profileId==='partner')
+      .reduce((s,p)=>s+p.amount,0);
+    const poolTotal = appState.logs.pool.reduce((s,p)=>s+p.amount,0);
+
+    $('#sidebar-me-fines').textContent = formatMoney(meFines);
+    $('#sidebar-partner-fines').textContent = formatMoney(partnerFines);
+    $('#sidebar-pool-total').textContent = formatMoney(poolTotal);
+    $('#dash-me-fines').textContent = formatMoney(meFines);
+    $('#dash-partner-fines').textContent = formatMoney(partnerFines);
+    $('#dash-pool-total').textContent = formatMoney(poolTotal);
+  }
+
+  function isReadonly(){
+    return activeProfileId === 'partner' && !appState.profiles.partner.claimed;
+  }
+
+  function switchSection(id){
+    $all('section[id^="section-"]').forEach(s=>s.style.display='none');
+    $('#section-'+id).style.display='';
+    $all('.nav-item').forEach(n=>{
+      if(n.getAttribute('data-section')===id) n.classList.add('active');
+      else n.classList.remove('active');
+    });
+    const titles = {
+      dashboard:'Dashboard',
+      habits:'Habits',
+      'workout-settings':'Workout',
+      profile:'Profile',
+      backup:'Backup & sync'
+    };
+    $('#header-title').textContent = titles[id] || 'Dashboard';
+  }
+
+  // Dashboard / Habits
+
+  function populateHabitSelect(){
+    const sel = $('#dash-habit-select');
+    sel.innerHTML = '';
+    appState.habitsConfig.forEach(h=>{
+      const opt = document.createElement('option');
+      opt.value = h.id;
+      opt.textContent = h.name;
+      sel.appendChild(opt);
+    });
+    updateHabitSubform();
+  }
+
+  function populateWorkoutSelect(){
+    const sel = $('#dash-workout-select');
+    sel.innerHTML = '';
+    appState.workoutTemplates.forEach(w=>{
+      const opt = document.createElement('option');
+      opt.value = w.id;
+      opt.textContent = w.name;
+      sel.appendChild(opt);
+    });
+  }
+
+  function updateHabitSubform(){
+    const habitId = $('#dash-habit-select').value;
+    $('#habit-generic-row').style.display = 'none';
+    $('#habit-sleep-row').style.display = 'none';
+    $('#habit-steps-row').style.display = 'none';
+    $('#habit-workout-row').style.display = 'none';
+    $('#habit-screen-row').style.display = 'none';
+
+    if(habitId === 'sleep'){
+      $('#habit-sleep-row').style.display = '';
+    } else if(habitId === 'steps'){
+      $('#habit-steps-row').style.display = '';
+    } else if(habitId === 'workout'){
+      $('#habit-workout-row').style.display = '';
+    } else if(habitId === 'screen_time'){
+      $('#habit-screen-row').style.display = '';
+    } else {
+      $('#habit-generic-row').style.display = '';
+    }
+  }
+
+  function addDashboardEntry(){
+    if(isReadonly()) return;
+    const habitId = $('#dash-habit-select').value;
+    const habit = appState.habitsConfig.find(h=>h.id===habitId);
+    if(!habit) return;
+    const date = todayISO();
+
+    let value = null;
+    let violated = false;
+    let fineAmount = 0;
+
+    // Metric-style logs (they get their own arrays, not logs.habits)
+    if(habitId === 'sleep'){
+      const bedtime = $('#dash-sleep-bedtime').value || null;
+      const waketime = $('#dash-sleep-waketime').value || null;
+      let hours = $('#dash-sleep-hours').value;
+      const quality = $('#dash-sleep-quality').value;
+      if(!hours && bedtime && waketime){
+        const [bh,bm]=bedtime.split(':').map(Number);
+        const [wh,wm]=waketime.split(':').map(Number);
+        let start = bh*60+bm, end=wh*60+wm;
+        if(end<=start) end+=24*60;
+        hours = ((end-start)/60).toFixed(1);
+      }
+      appState.logs.sleep.push({
+        id: uid('sl'),
+        profileId:activeProfileId,
+        date,
+        bedtime,
+        waketime,
+        hours:hours?Number(hours):null,
+        quality:quality?Number(quality):null
+      });
+    } else if(habitId === 'steps'){
+      const steps = Number($('#dash-steps-count').value) || 0;
+      appState.logs.steps.push({
+        id: uid('st'),
+        profileId:activeProfileId,
+        date,
+        steps
+      });
+    } else if(habitId === 'workout'){
+      const templateId = $('#dash-workout-select').value;
+      const tmpl = appState.workoutTemplates.find(w=>w.id===templateId);
+      const sets = Number($('#dash-workout-sets').value) || tmpl?.sets || null;
+      const reps = Number($('#dash-workout-reps').value) || tmpl?.reps || null;
+      const duration = Number($('#dash-workout-duration').value) || tmpl?.duration || null;
+      appState.logs.workouts.push({
+        id: uid('wo'),
+        profileId:activeProfileId,
+        date,
+        templateId,
+        name:tmpl?.name || 'Workout',
+        muscle:tmpl?.muscle || '',
+        sets,
+        reps,
+        duration
+      });
+    } else {
+      // Generic habits, including Screen time and custom habits
+      if(habitId === 'screen_time'){
+        const hoursRaw = $('#dash-screen-hours').value;
+        const hours = hoursRaw === '' ? 0 : Number(hoursRaw);
+        const extra = Math.max(0, hours - 2);
+        const multiplier = Math.ceil(extra);
+        if(habit.category === 'bad' && habit.fine > 0 && multiplier > 0){
+          violated = true;
+          fineAmount = habit.fine * multiplier;
+        }
+        value = hours;
+      } else {
+        const valStr = $('#dash-habit-value').value;
+        value = valStr === '' ? null : Number(valStr);
+      }
+    }
+
+    // Fines for other bad habits (Screen time handled above)
+    if(habit.category === 'bad' && habitId !== 'screen_time'){
+      violated = true;
+      if(habit.fine>0){
+        fineAmount = habit.fine;
+      }
+    }
+
+    // Only create a generic habit log for non-metric habits
+    const isMetricHabit = (habitId === 'sleep' || habitId === 'steps' || habitId === 'workout' || habitId === 'alcohol' );
+    let habitLogId = null;
+    if(!isMetricHabit){
+      habitLogId = uid('hl');
+      appState.logs.habits.push({
+        id: habitLogId,
+        profileId:activeProfileId,
+        date,
+        habitId,
+        value,
+        violated,
+        fine:fineAmount
+      });
+    }
+
+        if(violated && fineAmount>0){
+      appState.logs.pool.push({
+        id: uid('pl'),
+        profileId:activeProfileId,
+        date,
+        habitLogId,
+        habitId,
+        reason:habit.name,
+        amount:fineAmount
+      });
+      const prof = appState.profiles[activeProfileId];
+      prof.stats.totalFines = (prof.stats.totalFines||0)+fineAmount;
+    }
+
+
+
+
+    saveState();
+    updateSidebar();
+    renderLogs();
+
+    // reset form fields
+    $('#dash-habit-value').value = '';
+    $('#dash-sleep-bedtime').value = '';
+    $('#dash-sleep-waketime').value = '';
+    $('#dash-sleep-hours').value = '';
+    $('#dash-sleep-quality').value = '';
+    $('#dash-steps-count').value = '';
+    $('#dash-workout-sets').value = '';
+    $('#dash-workout-reps').value = '';
+    $('#dash-workout-duration').value = '';
+    $('#dash-screen-hours').value = '';
+  }
+
+  function inRange(date){
+    const d = new Date(date);
+    const now = new Date();
+    if(activeRange === 'today') return date === todayISO();
+    if(activeRange === 'week'){
+      const base = new Date(now.getTime());
+      const day = base.getDay();
+      const diff = base.getDate() - day + (day===0 ? -6 : 1);
+      const monday = new Date(base.getFullYear(), base.getMonth(), diff);
+      monday.setHours(0,0,0,0);
+      const sunday = new Date(monday.getTime());
+      sunday.setDate(monday.getDate()+6);
+      return d >= monday && d <= sunday;
+    }
+    if(activeRange === 'month'){
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }
+    return true;
+  }
+
+  function renderLogs(){
+    const tbody = $('#logs-table tbody');
+    tbody.innerHTML = '';
+    const pid = activeProfileId;
+    const entries = [];
+
+    appState.logs.habits.forEach(h=>{
+      if(h.profileId!==pid || !inRange(h.date)) return;
+      const habit = appState.habitsConfig.find(x=>x.id===h.habitId);
+      let details = '';
+      if(h.value != null){
+        if(h.habitId === 'screen_time'){
+          details = `${h.value}h`;
+        } else {
+          details = h.value;
+        }
+      } else {
+        details = h.violated ? 'Violated' : 'Logged';
+      }
+      entries.push({
+        source:'habit',
+        logId:h.id,
+        date:h.date,
+        label:habit?.name || h.habitId,
+        color:habit?.color || '#22c55e',
+        details,
+        fine:h.fine||0
+      });
+    });
+
+    appState.logs.sleep.forEach(s=>{
+      if(s.profileId!==pid || !inRange(s.date)) return;
+      const habit = appState.habitsConfig.find(x=>x.id==='sleep');
+      entries.push({
+        source:'sleep',
+        logId:s.id,
+        date:s.date,
+        label:'Sleep',
+        color:habit?.color || '#a855f7',
+        details:`${s.hours || '-'}h • Q${s.quality || '-'}`,
+        fine:0
+      });
+    });
+
+    appState.logs.steps.forEach(st=>{
+      if(st.profileId!==pid || !inRange(st.date)) return;
+      const habit = appState.habitsConfig.find(x=>x.id==='steps');
+      entries.push({
+        source:'steps',
+        logId:st.id,
+        date:st.date,
+        label:'Steps',
+        color:habit?.color || '#facc15',
+        details:st.steps,
+        fine:0
+      });
+    });
+
+    appState.logs.workouts.forEach(w=>{
+      if(w.profileId!==pid || !inRange(w.date)) return;
+      const habit = appState.habitsConfig.find(x=>x.id==='workout');
+      entries.push({
+        source:'workout',
+        logId:w.id,
+        date:w.date,
+        label:w.name,
+        color:habit?.color || '#38bdf8',
+        details:`${w.sets || '-'}x${w.reps || '-'} • ${w.duration || '-'} min`,
+        fine:0
+      });
+    });
+
+    appState.logs.pool.forEach(p=>{
+      if(p.profileId!==pid || !inRange(p.date)) return;
+      const habit = appState.habitsConfig.find(x=>x.id===p.habitId);
+      entries.push({
+        source:'pool',
+        logId:p.id,
+        date:p.date,
+        label:p.reason,
+        color:habit?.color || '#f97316',
+        details:'Fine',
+        fine:p.amount
+      });
+    });
+
+    entries.sort((a,b)=>a.date.localeCompare(b.date));
+
+    entries.forEach(entry=>{
+      const tr = document.createElement('tr');
+      const removeBtn = !isReadonly()
+        ? `<button class="btn btn-ghost" data-remove-source="${entry.source}" data-remove-id="${entry.logId}">❌</button>`
+        : '';
+      tr.innerHTML = `
+        <td><span class="log-dot" style="background:${entry.color};"></span>${entry.label}</td>
+        <td>${entry.date}</td>
+        <td>${entry.details}</td>
+        <td>${entry.fine ? formatMoney(entry.fine) : '-'}</td>
+        <td>${removeBtn}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('button[data-remove-source]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const src = btn.getAttribute('data-remove-source');
+        const id = btn.getAttribute('data-remove-id');
+
+        if(src==='habit'){
+          const habitLog = appState.logs.habits.find(h=>h.id===id);
+          if(habitLog){
+            appState.logs.pool = appState.logs.pool.filter(p=>p.habitLogId !== habitLog.id);
+          }
+          appState.logs.habits = appState.logs.habits.filter(h=>h.id!==id);
+        }
+        if(src==='sleep'){
+          appState.logs.sleep = appState.logs.sleep.filter(s=>s.id!==id);
+        }
+        if(src==='steps'){
+          appState.logs.steps = appState.logs.steps.filter(s=>s.id!==id);
+        }
+        if(src==='workout'){
+          appState.logs.workouts = appState.logs.workouts.filter(w=>w.id!==id);
+        }
+        if(src==='pool'){
+          appState.logs.pool = appState.logs.pool.filter(p=>p.id!==id);
+        }
+
+        saveState();
+        updateSidebar();
+        renderLogs();
+      });
+    });
+  }
+
+  // Habits settings
+
+  function renderHabitsSettings(){
+    const tbody = $('#habits-settings-table tbody');
+    tbody.innerHTML = '';
+    appState.habitsConfig.forEach((h,idx)=>{
+      const isSystem = SYSTEM_IDS.includes(h.id);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>
+          <span class="habit-dot" style="background:${h.color};"></span>${h.name}
+        </td>
+        <td>${h.category}</td>
+        <td>${h.fine}</td>
+        <td>${h.comparable ? 'Yes' : 'No'}</td>
+        <td>${isSystem ? '' : '<button class="btn btn-ghost" data-remove-habit="'+idx+'">❌</button>'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('button[data-remove-habit]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const idx = Number(btn.getAttribute('data-remove-habit'));
+        const h = appState.habitsConfig[idx];
+        if(h && !SYSTEM_IDS.includes(h.id)){
+          appState.habitsConfig.splice(idx,1);
+          saveState();
+          populateHabitSelect();
+          renderHabitsSettings();
+        }
+      });
+    });
+
+    renderHabitColorChoices();
+  }
+
+  let newHabitColor = '#22c55e';
+
+  function renderHabitColorChoices(){
+    const wrap = $('#new-habit-color-choices');
+    wrap.innerHTML = '';
+    const used = appState.habitsConfig.map(h=>h.color);
+    const free = HABIT_COLORS.filter(c=>!used.includes(c));
+    if(free.length === 0){
+      $('#new-habit-color-dot').style.background = '#22c55e';
+      return;
+    }
+    if(!free.includes(newHabitColor)) newHabitColor = free[0];
+    $('#new-habit-color-dot').style.background = newHabitColor;
+    free.forEach(color=>{
+      const div = document.createElement('div');
+      div.className = 'color-swatch';
+      div.style.background = color;
+      if(color === newHabitColor) div.classList.add('selected');
+      div.addEventListener('click',()=>{
+        newHabitColor = color;
+        renderHabitColorChoices();
+      });
+      wrap.appendChild(div);
+    });
+  }
+
+  function addHabitConfig(){
+    const name = $('#new-habit-name').value.trim();
+    if(!name) return;
+    const category = $('#new-habit-category').value === 'bad' ? 'bad':'good';
+    let fine = Number($('#new-habit-fine').value) || 0;
+    if(category === 'bad' && fine === 0) fine = 50;
+    const comparable = $('#new-habit-comparable').value === 'true';
+
+    const id = name.toLowerCase().replace(/\s+/g,'_').slice(0,20)+'_'+Date.now().toString(36);
+    appState.habitsConfig.push({
+      id,
+      name,
+      category,
+      fine,
+      comparable,
+      color:newHabitColor
+    });
+    saveState();
+    $('#new-habit-name').value = '';
+    $('#new-habit-fine').value = '0';
+    $('#new-habit-category').value = 'good';
+    $('#new-habit-comparable').value = 'true';
+    renderHabitsSettings();
+    populateHabitSelect();
+  }
+
+  // Workout settings
+
+  function renderWorkoutSettings(){
+    const tbody = $('#workout-settings-table tbody');
+    tbody.innerHTML = '';
+    appState.workoutTemplates.forEach((w,idx)=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${w.name}</td>
+        <td>${w.muscle}</td>
+        <td>${w.sets}</td>
+        <td>${w.reps}</td>
+        <td>${w.duration}</td>
+        <td><button class="btn btn-ghost" data-remove-workout="${idx}">❌</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('button[data-remove-workout]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const idx = Number(btn.getAttribute('data-remove-workout'));
+        appState.workoutTemplates.splice(idx,1);
+        saveState();
+        populateWorkoutSelect();
+        renderWorkoutSettings();
+      });
+    });
+  }
+
+  function addWorkoutTemplate(){
+    const name = $('#new-workout-name').value.trim();
+    if(!name) return;
+    const muscle = $('#new-workout-muscle').value.trim();
+    const sets = Number($('#new-workout-sets').value) || 0;
+    const reps = Number($('#new-workout-reps').value) || 0;
+    const duration = Number($('#new-workout-duration').value) || 0;
+    const id = name.toLowerCase().replace(/\s+/g,'_').slice(0,20)+'_'+Date.now().toString(36);
+    appState.workoutTemplates.push({ id, name, muscle, sets, reps, duration });
+    saveState();
+    $('#new-workout-name').value = '';
+    $('#new-workout-muscle').value = '';
+    $('#new-workout-sets').value = '';
+    $('#new-workout-reps').value = '';
+    $('#new-workout-duration').value = '';
+    populateWorkoutSelect();
+    renderWorkoutSettings();
+  }
+
+  // Profile
+
+function renderProfile() {
+  const p = appState.profiles[activeProfileId];
+  if (!p) return;
+
+  const prof = p.profile || {};
+
+  // Basic identity
+  $('#profile-name').value    = p.name || '';
+  $('#profile-dob').value     = prof.dob || '';
+  $('#profile-gender').value  = prof.gender || '';
+
+  // Name · AGE display
+  const age = calcAgeFromDob(prof.dob);
+  const nameForDisplay = p.name || 'Profile';
+  const displayEl = $('#profile-name-display');
+  if (displayEl) {
+    displayEl.textContent =
+      age !== '' ? `${nameForDisplay} · ${age}` : nameForDisplay;
+  }
+
+  // Measurements
+  $('#profile-height').value  = prof.heightCm  ?? '';
+  $('#profile-weight').value  = prof.weightKg  ?? '';
+  $('#profile-waist').value   = prof.waistCm   ?? '';
+  $('#profile-chest').value   = prof.chestCm   ?? '';
+  $('#profile-foot').value    = prof.footSize  ?? '';
+  $('#profile-max-hr').value  = prof.maxHr     ?? '';
+  $('#profile-bodyfat').value = prof.bodyFat   ?? '';
+
+  // Targets & scores
+  $('#profile-target-weight').value = prof.targetWeightKg ?? '';
+  $('#profile-bmi').textContent     = prof.bmiText || '-';
+  $('#profile-fitness-score').textContent =
+    prof.fitnessScore != null ? prof.fitnessScore : '-';
+
+  // Medical info
+  $('#profile-blood-group').value = prof.bloodGroup || '';
+  $('#profile-allergies').value   = prof.allergies  || '';
+  $('#profile-chronic').value     = prof.chronic    || '';
+  $('#profile-treatments').value  = prof.treatments || '';
+
+  // Sugar
+  $('#profile-sugar-fasting').value = prof.sugarFasting ?? '';
+  $('#profile-sugar-post').value    = prof.sugarPost    ?? '';
+  $('#profile-sugar-updated').textContent =
+    prof.sugarUpdatedText || 'Not recorded yet';
+
+  // Claim / readonly
+  const claimed = !!p.claimed;
+  $('#profile-claim-status').textContent = claimed ? 'Claimed' : 'Unclaimed';
+
+  const ro = !claimed;
+  [
+    'profile-name',
+    'profile-dob',
+    'profile-gender',
+    'profile-height',
+    'profile-weight',
+    'profile-waist',
+    'profile-chest',
+    'profile-foot',
+    'profile-max-hr',
+    'profile-bodyfat',
+    'profile-target-weight',
+    'profile-blood-group',
+    'profile-allergies',
+    'profile-chronic',
+    'profile-treatments',
+    'profile-sugar-fasting',
+    'profile-sugar-post'
+  ].forEach(id => {
+    const el = $('#' + id);
+    if (!el) return;
+    el.readOnly = ro;
+    el.disabled = ro;
+  });
+
+  $('#btn-save-profile').disabled = ro;
+
+  // Recompute BMI/fitness from current inputs
+  updateBmiView();
+}
+
+
+// Calculate age from ISO date string (yyyy-mm-dd)
+function calcAgeFromDob(dobStr) {
+  if (!dobStr) return '';
+  const dob = new Date(dobStr);
+  if (isNaN(dob.getTime())) return '';
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+  return age >= 0 ? age : '';
+}
+
+function updateBmiView() {
+  const heightCm = parseFloat($('#profile-height').value);
+  const weightKg = parseFloat($('#profile-weight').value);
+  const bodyFat  = parseFloat($('#profile-bodyfat').value); // kept if you use later
+  const dob      = $('#profile-dob').value;
+  const gender   = $('#profile-gender').value;
+
+  let bmi = null;
+  if (heightCm && weightKg) {
+    const hM = heightCm / 100;
+    bmi = weightKg / (hM * hM);
+  }
+
+  const age = calcAgeFromDob(dob);
+
+  let bmiText = '-';
+  if (bmi) bmiText = bmi.toFixed(1);
+
+  // Simple placeholder fitness score using BMI + age/gender tweaks
+  let fitnessScore = null;
+  if (bmi) {
+    if (bmi < 18.5) fitnessScore = 40;
+    else if (bmi < 25) fitnessScore = 80;
+    else if (bmi < 30) fitnessScore = 60;
+    else fitnessScore = 30;
+
+    if (age !== '' && age > 45) fitnessScore -= 5;
+    if (gender === 'female') fitnessScore += 2;
+  }
+
+  if (fitnessScore != null) {
+    fitnessScore = Math.max(0, Math.min(100, fitnessScore));
+  }
+
+  $('#profile-bmi').textContent = bmiText;
+  $('#profile-fitness-score').textContent =
+    fitnessScore != null ? fitnessScore : '-';
+
+  const p = appState.profiles[activeProfileId];
+  if (p && p.profile) {
+    p.profile.bmiText = bmiText;
+    p.profile.fitnessScore = fitnessScore;
+  }
+}
+
+
+
+function saveProfile() {
+  const p = appState.profiles[activeProfileId];
+  if (!p) return;
+
+  if (!p.profile) p.profile = {};
+  const prof = p.profile;
+
+  // Basic identity
+  const name = $('#profile-name').value.trim();
+  p.name = name || p.name || 'Me';
+
+  prof.dob    = $('#profile-dob').value || '';
+  prof.gender = $('#profile-gender').value || '';
+
+  // Measurements
+  prof.heightCm = parseFloat($('#profile-height').value) || null;
+  prof.weightKg = parseFloat($('#profile-weight').value) || null;
+  prof.waistCm  = parseFloat($('#profile-waist').value) || null;
+  prof.chestCm  = parseFloat($('#profile-chest').value) || null;
+  prof.footSize = $('#profile-foot').value || '';
+  prof.maxHr    = parseInt($('#profile-max-hr').value, 10) || null;
+  prof.bodyFat  = parseFloat($('#profile-bodyfat').value) || null;
+
+  // Targets & scores
+  prof.targetWeightKg = parseFloat($('#profile-target-weight').value) || null;
+
+  // Medical info
+  prof.bloodGroup = $('#profile-blood-group').value.trim();
+  prof.allergies  = $('#profile-allergies').value.trim();
+  prof.chronic    = $('#profile-chronic').value.trim();
+  prof.treatments = $('#profile-treatments').value.trim();
+
+  // Sugar
+  prof.sugarFasting = parseFloat($('#profile-sugar-fasting').value) || null;
+  prof.sugarPost    = parseFloat($('#profile-sugar-post').value) || null;
+
+  if (prof.sugarFasting || prof.sugarPost) {
+    const now = new Date();
+    const ts = now.toLocaleString();
+    prof.sugarUpdatedText = ts;
+    $('#profile-sugar-updated').textContent = ts;
+  }
+
+  // Recompute BMI & fitness before persisting
+  updateBmiView();
+
+  saveAppState();   // your existing persistence
+  renderProfile();  // refresh UI
+}
+
+
+
+  // Backup
+
+  function exportApp(){
+    const blob = new Blob([JSON.stringify(appState,null,2)],{type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'healthHub_app_state.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function importApp(file){
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e=>{
+      try{
+        const data = JSON.parse(e.target.result);
+        appState = deepMerge(structuredClone(defaultState), data);
+        saveState();
+        updateSidebar();
+        populateHabitSelect();
+        populateWorkoutSelect();
+        renderLogs();
+        renderHabitsSettings();
+        renderWorkoutSettings();
+        renderProfile();
+      }catch(err){
+        console.error(err);
+        alert('Failed to import JSON');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    updateSidebar();
+    populateHabitSelect();
+    populateWorkoutSelect();
+    renderLogs();
+    renderHabitsSettings();
+    renderWorkoutSettings();
+    renderProfile();
+
+    $all('.nav-item').forEach(item=>{
+      item.addEventListener('click',()=>switchSection(item.getAttribute('data-section')));
+    });
+
+    $all('.profile-pill').forEach(pill=>{
+      pill.addEventListener('click',()=>{
+        const pid = pill.getAttribute('data-profile');
+        activeProfileId = pid;
+        updateSidebar();
+        renderLogs();
+        renderProfile();
+      });
+    });
+
+    $all('.filter-pill').forEach(pill=>{
+      pill.addEventListener('click',()=>{
+        activeRange = pill.getAttribute('data-range');
+        $all('.filter-pill').forEach(p=>p.classList.remove('active'));
+        pill.classList.add('active');
+        renderLogs();
+      });
+    });
+
+    $('#dash-habit-select').addEventListener('change',updateHabitSubform);
+    $('#btn-add-entry').addEventListener('click',addDashboardEntry);
+
+    $('#btn-add-habit-config').addEventListener('click',addHabitConfig);
+    $('#btn-add-workout-template').addEventListener('click',addWorkoutTemplate);
+
+    $('#profile-height').addEventListener('input',updateBmiView);
+    $('#profile-weight').addEventListener('input',updateBmiView);
+    $('#profile-bodyfat').addEventListener('input',updateBmiView);
+    $('#btn-save-profile').addEventListener('click',saveProfile);
+
+    $('#btn-export-app').addEventListener('click',exportApp);
+    $('#input-import-app').addEventListener('change',e=>{
+      importApp(e.target.files[0]);
+      e.target.value = '';
+    });
+
+    $('#btn-compare-range').addEventListener('click',()=>{
+      alert('Comparison logic (Me vs Partner) will use comparable habits and logs for this range.');
+    });
+  });
+</script>
+</body>
+</html>
+
